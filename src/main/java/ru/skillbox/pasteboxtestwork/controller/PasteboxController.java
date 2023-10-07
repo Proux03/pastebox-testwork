@@ -10,9 +10,7 @@ import ru.skillbox.pasteboxtestwork.api.request.PasteboxRequest;
 import ru.skillbox.pasteboxtestwork.api.response.PasteboxResponse;
 import ru.skillbox.pasteboxtestwork.api.response.PasteboxUrlResponse;
 import ru.skillbox.pasteboxtestwork.service.PasteboxService;
-
 import java.util.Collection;
-import java.util.Collections;
 
 @RestController
 @RequiredArgsConstructor

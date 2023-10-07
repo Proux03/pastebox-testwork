@@ -2,14 +2,10 @@ package ru.skillbox.pasteboxtestwork.repository;
 
 import org.springframework.stereotype.Repository;
 import ru.skillbox.pasteboxtestwork.exception.NotFoundEntityException;
-
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -30,11 +26,10 @@ public class PasteboxRepositoryMap implements PasteboxRepository {
 
     @Override
     public List<PasteboxEntity> getListOfPublicAndAlive(int amount) {
-        LocalDateTime now = LocalDateTime.now();
 
         return vault.values().stream()
                 .filter(PasteboxEntity::isPublic)
-                .filter(PasteboxEntity -> PasteboxEntity.getLifetime().isAfter(now))
+                .filter(PasteboxEntity -> PasteboxEntity.getLifetime().isAfter(LocalDateTime.now()))
                 .sorted(Comparator.comparing(PasteboxEntity::getId).reversed())
                 .limit(amount)
                 .collect(Collectors.toList());
