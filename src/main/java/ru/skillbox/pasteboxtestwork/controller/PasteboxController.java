@@ -1,6 +1,7 @@
 package ru.skillbox.pasteboxtestwork.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class PasteboxController {
 
     private final PasteboxService pasteboxService;
@@ -21,6 +23,7 @@ public class PasteboxController {
     @GetMapping("/")
     public Collection<PasteboxResponse> getPublicPasteList() {
         return pasteboxService.getFirstPublicPasteboxes();
+
     }
 
     @GetMapping("/{hash}")

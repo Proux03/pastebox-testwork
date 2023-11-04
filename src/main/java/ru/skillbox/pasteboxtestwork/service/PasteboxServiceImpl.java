@@ -1,6 +1,7 @@
 package ru.skillbox.pasteboxtestwork.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import ru.skillbox.pasteboxtestwork.api.request.PasteboxRequest;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @ConfigurationProperties(prefix = "app")
+@Slf4j
 public class PasteboxServiceImpl implements PasteboxService {
 
     private String host = "http://pastebox.skillbox.ru";
@@ -29,6 +31,7 @@ public class PasteboxServiceImpl implements PasteboxService {
     public PasteboxResponse getByHash(String hash) {
 
         PasteboxEntity pasteboxEntity = pasteboxRepository.getByHash(hash);
+        log.info("get paste with hash " + hash);
         return new PasteboxResponse(pasteboxEntity.getData(), pasteboxEntity.isPublic());
     }
 
@@ -36,7 +39,7 @@ public class PasteboxServiceImpl implements PasteboxService {
     public List<PasteboxResponse> getFirstPublicPasteboxes() {
 
         List<PasteboxEntity> list = pasteboxRepository.getListOfPublicAndAlive(publicListSize);
-
+        log.info("get list of paste count " + list.size());
         return list.stream().map(pasteboxEntity ->
                 new PasteboxResponse(pasteboxEntity.getData(), pasteboxEntity.isPublic()))
                 .collect(Collectors.toList());
@@ -52,6 +55,7 @@ public class PasteboxServiceImpl implements PasteboxService {
         pasteboxEntity.setPublic(request.getPublicStatus() == PublicStatus.PUBLIC);
         pasteboxEntity.setLifetime(LocalDateTime.now().plusSeconds(request.getExpirationTimeSeconds()));
         pasteboxRepository.add(pasteboxEntity);
+        log.info("paste with hash " + hash + " added");
         return new PasteboxUrlResponse(host + "/" + pasteboxEntity.getHash());
     }
 
