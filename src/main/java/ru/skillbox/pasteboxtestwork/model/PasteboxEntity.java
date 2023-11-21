@@ -1,7 +1,6 @@
-package ru.skillbox.pasteboxtestwork.repository;
+package ru.skillbox.pasteboxtestwork.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +23,7 @@ public class PasteboxEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private int id;
+    private long id;
 
     @Column(name = "data")
     private String data;
@@ -32,8 +31,9 @@ public class PasteboxEntity {
     @Column(name = "hash")
     private String hash;
 
-    @Column(name = "lifetima")
+    @Column(name = "lifetime")
     LocalDateTime lifetime;
 
+    @Column(name = "isPublic")
     private boolean isPublic;
 }

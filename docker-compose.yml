@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  pastebox-testwork:
+    image: pastebox:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7777:8080"
+    depends_on:
+      - some-postgres
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://some-postgres/postgres
+
+  some-postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+

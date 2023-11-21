@@ -6,8 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.skillbox.pasteboxtestwork.api.response.PasteboxResponse;
 import ru.skillbox.pasteboxtestwork.exception.NotFoundEntityException;
-import ru.skillbox.pasteboxtestwork.repository.PasteboxEntity;
-import ru.skillbox.pasteboxtestwork.repository.PasteboxRepository;
+import ru.skillbox.pasteboxtestwork.model.PasteboxEntity;
+import ru.skillbox.pasteboxtestwork.repository.PasteboxRepositoryDB;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,11 +21,11 @@ class PasteboxServiceImplTest {
     private PasteboxService pasteboxService;
 
     @MockBean
-    private PasteboxRepository pasteboxRepository;
+    private PasteboxRepositoryDB pasteboxRepository;
 
     @Test
     void getByHashWhenNotExists() {
-        when(pasteboxRepository.getByHash(anyString())).thenThrow(NotFoundEntityException.class);
+        when(pasteboxRepository.findByHash(anyString())).thenThrow(NotFoundEntityException.class);
         assertThrows(NotFoundEntityException.class, () -> pasteboxService.getByHash("eurgfeurn"));
     }
 
@@ -36,7 +36,7 @@ class PasteboxServiceImplTest {
         pasteboxEntity.setData("paste");
         pasteboxEntity.setPublic(true);
 
-        when(pasteboxRepository.getByHash("1")).thenReturn(pasteboxEntity);
+        when(pasteboxRepository.findByHash("1")).thenReturn(pasteboxEntity);
 
         PasteboxResponse expected = new PasteboxResponse("paste", true);
         PasteboxResponse actual = pasteboxService.getByHash("1");

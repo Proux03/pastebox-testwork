@@ -8,8 +8,8 @@ import ru.skillbox.pasteboxtestwork.api.request.PasteboxRequest;
 import ru.skillbox.pasteboxtestwork.api.request.PublicStatus;
 import ru.skillbox.pasteboxtestwork.api.response.PasteboxResponse;
 import ru.skillbox.pasteboxtestwork.api.response.PasteboxUrlResponse;
-import ru.skillbox.pasteboxtestwork.repository.PasteboxEntity;
-import ru.skillbox.pasteboxtestwork.repository.PasteboxRepository;
+import ru.skillbox.pasteboxtestwork.model.PasteboxEntity;
+import ru.skillbox.pasteboxtestwork.repository.PasteboxRepositoryDB;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,13 +24,13 @@ public class PasteboxServiceImpl implements PasteboxService {
 
     private String host = "http://pastebox.skillbox.ru";
     private int publicListSize = 10;
-    private final PasteboxRepository pasteboxRepository;
+    private final PasteboxRepositoryDB pasteboxRepository;
     private AtomicInteger idGenerator = new AtomicInteger(0);
 
     @Override
     public PasteboxResponse getByHash(String hash) {
 
-        PasteboxEntity pasteboxEntity = pasteboxRepository.getByHash(hash);
+        PasteboxEntity pasteboxEntity = pasteboxRepository.findByHash(hash);
         log.info("get paste with hash " + hash);
         return new PasteboxResponse(pasteboxEntity.getData(), pasteboxEntity.isPublic());
     }
@@ -38,7 +38,7 @@ public class PasteboxServiceImpl implements PasteboxService {
     @Override
     public List<PasteboxResponse> getFirstPublicPasteboxes() {
 
-        List<PasteboxEntity> list = pasteboxRepository.getListOfPublicAndAlive(publicListSize);
+        List<PasteboxEntity> list = pasteboxRepository.findAll();
         log.info("get list of paste count " + list.size());
         return list.stream().map(pasteboxEntity ->
                 new PasteboxResponse(pasteboxEntity.getData(), pasteboxEntity.isPublic()))
@@ -54,7 +54,7 @@ public class PasteboxServiceImpl implements PasteboxService {
         pasteboxEntity.setHash(Integer.toHexString(hash));
         pasteboxEntity.setPublic(request.getPublicStatus() == PublicStatus.PUBLIC);
         pasteboxEntity.setLifetime(LocalDateTime.now().plusSeconds(request.getExpirationTimeSeconds()));
-        pasteboxRepository.add(pasteboxEntity);
+        pasteboxRepository.save(pasteboxEntity);
         log.info("paste with hash " + hash + " added");
         return new PasteboxUrlResponse(host + "/" + pasteboxEntity.getHash());
     }
